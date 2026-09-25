@@ -5,7 +5,7 @@ export const posts = [
     title: "About Me",
     date: "2026-09-25",
     summary: "A quick introduction to who I am and what I do.",
-    content: `Hi, I'm Ming Yan Hong, an educator based in Hong Kong. I work with students and teachers every day, helping manage class data, track learning progress, and support school IT needs.
+    content: `Hi, I'm Ming Yan Hong, an IT-Technician in Hong Kong. I work with students and teachers every day, helping manage class data, track learning progress, and support school IT needs.
 
 I believe in practical solutions—whether it's automating repetitive tasks or building simple tools that make everyone's life easier. This blog is where I share what I learn along the way.`
   },
@@ -13,8 +13,8 @@ I believe in practical solutions—whether it's automating repetitive tasks or b
     id: 2,
     title: "My Work in Education",
     date: "2026-09-25",
-    summary: "What I do as an educator and how I use technology in schools.",
-    content: `As an educator in Hong Kong, my daily work involves a lot more than just teaching. I manage student records, coordinate school activities like music festivals, and help colleagues with IT troubleshooting.
+    summary: "What I do as an Technician and how I use technology in schools.",
+    content: `As an Technician in School, my daily work involves a lot more than just IT-Support. I manage student records, coordinate school activities like music festivals, and help colleagues with IT troubleshooting.
 
 I've worked extensively with:
 - Student data management (class lists, English/Chinese names, account systems)
