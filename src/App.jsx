@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
 import DataTable from "./pages/DataTable";
+import Album from "./pages/Album";
 
 function App() {
   return (
@@ -28,9 +29,11 @@ function App() {
       <div className="app">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/latest" element={<Home />} />
           <Route path="/post/:id" element={<PostDetail />} />
           {/* 之後會從 Supabase 讀取資料的表格頁面 */}
           <Route path="/table" element={<DataTable />} />
+          <Route path="/album" element={<Album />} />
         </Routes>
       </div>
     </>

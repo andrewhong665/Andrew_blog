@@ -1,69 +1,111 @@
-// src/pages/DataTable.jsx
-// 這個頁面之後會改成從 Supabase 抓資料。
-// 目前先用假資料(fakeData)顯示表格結構。
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 
-// TODO: 之後刪掉這段假資料,改成呼叫 Supabase
-// import { supabase } from "../lib/supabase";
-const fakeData = [
-  { id: 1, title: "Sample Item 1", category: "study",  created_at: "2026-09-20" },
-  { id: 2, title: "Sample Item 2", category: "life",   created_at: "2026-09-21" },
-  { id: 3, title: "Sample Item 3", category: "travel", created_at: "2026-09-22" },
-];
+function formatCellValue(value) {
+  if (value === null || value === undefined) {
+    return "—";
+  }
+
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+
+  return String(value);
+}
 
 function DataTable() {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // TODO: 之後改成真的 Supabase 查詢,例如:
-    // async function load() {
-    //   const { data, error } = await supabase.from("items").select("*");
-    //   if (!error) setItems(data);
-    //   setLoading(false);
-    // }
-    // load();
+    if (!supabase) {
+      return undefined;
+    }
 
-    // 目前先用假資料模擬
-    setItems(fakeData);
-    setLoading(false);
+    let isCurrent = true;
+
+    async function loadItems() {
+      try {
+        const { data, error: queryError } = await supabase
+          .from("MyInfo")
+          .select("*");
+
+        if (!isCurrent) {
+          return;
+        }
+
+        if (queryError) {
+          setError(queryError.message);
+        } else {
+          setRows(data ?? []);
+        }
+      } catch (queryFailure) {
+        if (isCurrent) {
+          setError(
+            queryFailure instanceof Error
+              ? queryFailure.message
+              : "An unexpected error occurred.",
+          );
+        }
+      } finally {
+        if (isCurrent) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadItems();
+
+    return () => {
+      isCurrent = false;
+    };
   }, []);
 
   return (
     <>
       <Header />
       <main className="container">
-        <h1>Data Table</h1>
-        <p className="post-summary">
-          This table will load data from Supabase later.
-        </p>
+        <h1>MyInfo</h1>
 
-        {loading ? (
-          <p>Loading...</p>
+        {!isSupabaseConfigured ? (
+          <p className="table-message" role="alert">
+            Supabase is not configured. Add your project URL and publishable
+            key to a local <code>.env</code> file, then restart the app.
+          </p>
+        ) : error ? (
+          <p className="table-message" role="alert">
+            Could not load MyInfo from Supabase: {error}
+          </p>
+        ) : loading ? (
+          <p className="table-message" role="status" aria-live="polite">
+            Loading MyInfo...
+          </p>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Created At</th>
+                {rows.length > 0 &&
+                  Object.keys(rows[0]).map((column) => (
+                    <th key={column} scope="col">
+                      {column}
+                    </th>
+                  ))}
               </tr>
             </thead>
             <tbody>
-              {items.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.title}</td>
-                  <td>{item.category}</td>
-                  <td>{item.created_at}</td>
+              {rows.map((row, index) => (
+                <tr key={row.id ?? index}>
+                  {Object.values(row).map((value, cellIndex) => (
+                    <td key={cellIndex}>{formatCellValue(value)}</td>
+                  ))}
                 </tr>
               ))}
-              {items.length === 0 && (
+              {rows.length === 0 && (
                 <tr>
-                  <td colSpan="4">No data yet.</td>
+                  <td>No MyInfo rows found.</td>
                 </tr>
               )}
             </tbody>

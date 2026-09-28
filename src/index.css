@@ -33,6 +33,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-left: 4.25rem;
 }
 
 /* 星空背景 */
@@ -189,32 +190,136 @@ section span:nth-child(10) {
 
 /* 頁首 */
 .header {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  background: rgb(255 255 255 / 90%);
-  border-bottom: 1px solid #ddd;
+  width: 4.25rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+  overflow: hidden;
+  padding: 1rem 0.65rem;
+  background: rgb(8 15 35 / 94%);
+  border-right: 1px solid rgb(255 255 255 / 15%);
+  box-shadow: 0 0 24px rgb(0 0 0 / 25%);
+  transition: width 0.25s ease;
+  backdrop-filter: blur(12px);
 }
 
-/* Logo */
+.header.is-open {
+  width: 16rem;
+}
+
+.menu-toggle {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0.7rem;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.menu-toggle:hover,
+.menu-toggle:focus-visible {
+  background: rgb(255 255 255 / 12%);
+}
+
+.menu-icon {
+  min-width: 1.25rem;
+  font-size: 1.35rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.menu-toggle-label,
+.logo,
+.main-menu a {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.header.is-open .menu-toggle-label,
+.header.is-open .logo,
+.header.is-open .main-menu a {
+  opacity: 1;
+}
+
 .logo {
-  color: #222;
-  font-size: 1.2rem;
+  padding: 0 0.7rem;
+  color: #fff;
+  font-size: 1.15rem;
   font-weight: bold;
   text-decoration: none;
+  white-space: nowrap;
 }
 
-/* 導覽列 */
-.header nav a {
-  margin-left: 1rem;
-  color: #444;
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.main-menu a {
+  display: block;
+  overflow: hidden;
+  padding: 0.65rem 0.8rem;
+  color: rgb(255 255 255 / 82%);
   text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 0.5rem;
 }
 
-.header nav a:hover {
-  color: #000;
-  text-decoration: underline;
+.main-menu a:hover,
+.main-menu a:focus-visible {
+  color: #fff;
+  background: rgb(255 255 255 / 12%);
+}
+
+.main-menu a.active {
+  color: #fff;
+  background: #2563eb;
+}
+
+/* Avoid showing collapsed labels while the pointer is over the closed rail. */
+.header:not(.is-open) .logo,
+.header:not(.is-open) .main-menu a,
+.header:not(.is-open) .menu-toggle-label {
+  pointer-events: none;
+}
+
+/* 手機版 */
+@media (max-width: 600px) {
+  .header {
+    width: 3.75rem;
+  }
+
+  .header.is-open {
+    width: min(16rem, 85vw);
+  }
+
+  .app {
+    padding-left: 3.75rem;
+  }
+
+  .container {
+    margin-top: 1rem;
+  }
+
+  .data-table {
+    display: block;
+    overflow-x: auto;
+  }
 }
 
 /* 主要內容 */
@@ -310,6 +415,78 @@ section span:nth-child(10) {
   background: #efefef;
 }
 
+/* 相簿 */
+.album-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.album-eyebrow {
+  color: #93c5fd;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.album-count {
+  color: rgb(255 255 255 / 75%);
+}
+
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.album-photo {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: rgb(8 15 35 / 88%);
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 0.8rem;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 22%);
+}
+
+.album-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.album-photo:hover img,
+.album-photo:focus-visible img {
+  transform: scale(1.04);
+}
+
+.album-photo-title {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  padding: 2.5rem 0.9rem 0.75rem;
+  color: #fff;
+  background: linear-gradient(transparent, rgb(0 0 0 / 78%));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  color: #fff;
+  background: rgb(8 15 35 / 82%);
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 0.6rem;
+}
+
 /* 頁尾 */
 .footer {
   padding: 1rem;
@@ -318,28 +495,4 @@ section span:nth-child(10) {
   text-align: center;
   background: rgb(255 255 255 / 90%);
   border-top: 1px solid #ddd;
-}
-
-/* 手機版 */
-@media (max-width: 600px) {
-  .header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1rem;
-  }
-
-  .header nav a {
-    margin-right: 0.75rem;
-    margin-left: 0;
-  }
-
-  .container {
-    margin-top: 1rem;
-  }
-
-  .data-table {
-    display: block;
-    overflow-x: auto;
-  }
 }

@@ -2,6 +2,21 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
+## Supabase table
+
+The Data Table page reads all columns from the `public."MyInfo"` table. Create a local
+`.env` file based on `.env.example` and set `VITE_SUPABASE_URL` and
+`VITE_SUPABASE_PUBLISHABLE_KEY` from your Supabase project's Connect panel.
+Restart the Vite server after changing environment variables.
+
+The page derives its columns from the returned rows. Configure the Data API and
+database grants/RLS policies to allow the intended app users to read this data.
+Do not put a service-role or secret key in a `VITE_` variable.
+
+The Photo Album page lists image files from the `Andrew_Blog_photos` Storage
+bucket, including images in folders. The app needs permission to list and view
+objects in that bucket; signed viewing links expire after one hour.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
