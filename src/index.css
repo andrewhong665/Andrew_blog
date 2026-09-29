@@ -37,7 +37,7 @@ body {
 }
 
 /* 星空背景 */
-section {
+.falling-stars {
   position: fixed;
   z-index: -1;
   top: 0;
@@ -65,7 +65,7 @@ section {
 }
 
 /* 流星 */
-section span {
+.falling-stars span {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -80,7 +80,7 @@ section span {
   animation: animate 3s linear infinite;
 }
 
-section span::before {
+.falling-stars span::before {
   content: "";
   position: absolute;
   top: 50%;
@@ -108,7 +108,7 @@ section span::before {
 }
 
 /* 不同流星的位置及速度 */
-section span:nth-child(1) {
+.falling-stars span:nth-child(1) {
   top: 0;
   right: 0;
   left: auto;
@@ -116,7 +116,7 @@ section span:nth-child(1) {
   animation-duration: 1s;
 }
 
-section span:nth-child(2) {
+.falling-stars span:nth-child(2) {
   top: 0;
   right: 80px;
   left: auto;
@@ -124,7 +124,7 @@ section span:nth-child(2) {
   animation-duration: 3s;
 }
 
-section span:nth-child(3) {
+.falling-stars span:nth-child(3) {
   top: 80px;
   right: 0;
   left: auto;
@@ -132,7 +132,7 @@ section span:nth-child(3) {
   animation-duration: 2s;
 }
 
-section span:nth-child(4) {
+.falling-stars span:nth-child(4) {
   top: 0;
   right: 180px;
   left: auto;
@@ -140,7 +140,7 @@ section span:nth-child(4) {
   animation-duration: 1.5s;
 }
 
-section span:nth-child(5) {
+.falling-stars span:nth-child(5) {
   top: 0;
   right: 400px;
   left: auto;
@@ -148,7 +148,7 @@ section span:nth-child(5) {
   animation-duration: 2.5s;
 }
 
-section span:nth-child(6) {
+.falling-stars span:nth-child(6) {
   top: 0;
   right: 600px;
   left: auto;
@@ -156,7 +156,7 @@ section span:nth-child(6) {
   animation-duration: 3s;
 }
 
-section span:nth-child(7) {
+.falling-stars span:nth-child(7) {
   top: 300px;
   right: 0;
   left: auto;
@@ -164,7 +164,7 @@ section span:nth-child(7) {
   animation-duration: 1.75s;
 }
 
-section span:nth-child(8) {
+.falling-stars span:nth-child(8) {
   top: 0;
   right: 700px;
   left: auto;
@@ -172,7 +172,7 @@ section span:nth-child(8) {
   animation-duration: 1.25s;
 }
 
-section span:nth-child(9) {
+.falling-stars span:nth-child(9) {
   top: 0;
   right: 1000px;
   left: auto;
@@ -180,7 +180,7 @@ section span:nth-child(9) {
   animation-duration: 2.25s;
 }
 
-section span:nth-child(10) {
+.falling-stars span:nth-child(10) {
   top: 0;
   right: 450px;
   left: auto;
