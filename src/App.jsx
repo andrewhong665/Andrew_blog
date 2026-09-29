@@ -1,34 +1,27 @@
 // src/App.jsx
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
 import DataTable from "./pages/DataTable";
 import Album from "./pages/Album";
 import Latest from "./pages/Latest";
 
-function App() {
-  const { pathname } = useLocation();
-  const showAnimatedBackground = pathname !== "/latest";
+const stars = Array.from({ length: 24 }, (_, index) => ({
+  left: `${(index * 41 + 13) % 100}%`,
+  animationDuration: `${5 + (index % 8)}s`,
+  animationDelay: `${((index * 7) % 50) / 10}s`,
+  opacity: 0.22 + ((index * 3) % 6) * 0.05,
+  transform: `scale(${0.6 + ((index * 2) % 5) * 0.1})`,
+}));
 
+function App() {
   return (
     <>
-      {showAnimatedBackground && (
-        <section className="falling-stars" aria-hidden="true">
-          {Array.from({ length: 40 }).map((_, i) => (
-            <span
-              key={i}
-              className="star"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDuration: `${5 + Math.random() * 7}s`,
-                animationDelay: `${Math.random() * 5}s`,
-                opacity: 0.6 + Math.random() * 0.4,
-                transform: `scale(${0.6 + Math.random() * 0.8})`,
-              }}
-            />
-          ))}
-        </section>
-      )}
+      <section className="falling-stars" aria-hidden="true">
+        {stars.map((star, index) => (
+          <span key={index} className="star" style={star} />
+        ))}
+      </section>
 
       {/* 頁面內容（路由） */}
       <div className="app">

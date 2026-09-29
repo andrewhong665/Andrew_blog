@@ -23,7 +23,7 @@ body {
     sans-serif;
   line-height: 1.6;
   background: #050816;
-  color: #1b79b3;
+  color: #e7efff;
 }
 
 /* React 主容器 */
@@ -45,11 +45,13 @@ body {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-image: url("https://i.postimg.cc/c1Q3njM0/bg2.jpg");
+  background-image:
+    linear-gradient(135deg, rgb(4 9 27 / 64%), rgb(11 22 52 / 60%)),
+    url("https://i.postimg.cc/c1Q3njM0/bg2.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  animation: animateBg 50s linear infinite;
+  animation: animateBg 70s linear infinite;
 }
 
 /* 背景放大動畫 */
@@ -202,15 +204,16 @@ body {
   gap: 1.5rem;
   overflow: hidden;
   padding: 1rem 0.65rem;
-  background: rgb(8 15 35 / 94%);
-  border-right: 1px solid rgb(255 255 255 / 15%);
-  box-shadow: 0 0 24px rgb(0 0 0 / 25%);
+  background: linear-gradient(180deg, rgb(11 20 45 / 96%), rgb(5 10 26 / 94%));
+  border-right: 1px solid rgb(147 197 253 / 22%);
+  box-shadow: 0 0 32px rgb(0 0 0 / 40%);
   transition: width 0.25s ease;
   backdrop-filter: blur(12px);
 }
 
 .header.is-open {
   width: 16rem;
+  border-right-color: rgb(147 197 253 / 42%);
 }
 
 .menu-toggle {
@@ -231,7 +234,8 @@ body {
 
 .menu-toggle:hover,
 .menu-toggle:focus-visible {
-  background: rgb(255 255 255 / 12%);
+  background: rgb(96 165 250 / 18%);
+  outline: none;
 }
 
 .menu-icon {
@@ -256,7 +260,7 @@ body {
 
 .logo {
   padding: 0 0.7rem;
-  color: #fff;
+  color: #e0f2fe;
   font-size: 1.15rem;
   font-weight: bold;
   text-decoration: none;
@@ -283,12 +287,13 @@ body {
 .main-menu a:hover,
 .main-menu a:focus-visible {
   color: #fff;
-  background: rgb(255 255 255 / 12%);
+  background: rgb(96 165 250 / 16%);
 }
 
 .main-menu a.active {
   color: #fff;
-  background: #2563eb;
+  background: linear-gradient(110deg, #2563eb, #4f46e5);
+  box-shadow: 0 6px 18px rgb(37 99 235 / 25%);
 }
 
 /* Avoid showing collapsed labels while the pointer is over the closed rail. */
@@ -326,9 +331,16 @@ body {
 .container {
   flex: 1;
   width: 100%;
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 3.25rem clamp(1rem, 3vw, 2.5rem);
+}
+
+.container > h1 {
+  margin-bottom: 0.4rem;
+  color: #f8fbff;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
 }
 
 /* 文章列表 */
@@ -339,38 +351,39 @@ body {
 
 .post-item {
   margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgb(255 255 255 / 95%);
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 1.25rem;
+  background: linear-gradient(145deg, rgb(15 27 57 / 91%), rgb(8 16 37 / 90%));
+  border: 1px solid rgb(191 219 254 / 17%);
+  border-radius: 1rem;
+  box-shadow: 0 16px 38px rgb(0 0 0 / 20%);
 }
 
 .post-title {
-  color: #222;
+  color: #dbeafe;
   font-size: 1.2rem;
   font-weight: bold;
   text-decoration: none;
 }
 
 .post-title:hover {
-  text-decoration: underline;
+  color: #fff;
 }
 
 .post-meta {
   margin: 0.3rem 0 0.5rem;
-  color: #666;
+  color: #9fb3d1;
   font-size: 0.85rem;
 }
 
 .post-summary {
-  color: #444;
+  color: #d4deef;
 }
 
 /* 返回連結 */
 .back-link {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #444;
+  color: #bfdbfe;
   text-decoration: none;
 }
 
@@ -381,15 +394,16 @@ body {
 /* 文章詳細內容 */
 .post-detail {
   padding: 1.5rem;
-  background: rgb(255 255 255 / 95%);
-  border: 1px solid #222;
-  border-radius: 6px;
+  color: #e7efff;
+  background: rgb(8 15 35 / 90%);
+  border: 1px solid rgb(191 219 254 / 20%);
+  border-radius: 1rem;
+  box-shadow: 0 18px 44px rgb(0 0 0 / 24%);
 }
 
 .post-detail h1 {
   margin-bottom: 0.5rem;
-  text-emphasis-color: #222;
-  
+  color: #f8fbff;
 }
 
 .post-content {
@@ -400,19 +414,37 @@ body {
 .data-table {
   width: 100%;
   margin-top: 1.5rem;
-  background: #fff;
-  border-collapse: collapse;
+  overflow: hidden;
+  color: #e7efff;
+  background: rgb(8 15 35 / 88%);
+  border: 1px solid rgb(191 219 254 / 22%);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 1rem;
+  box-shadow: 0 18px 44px rgb(0 0 0 / 25%);
 }
 
 .data-table th,
 .data-table td {
   padding: 0.6rem 0.8rem;
   text-align: left;
-  border: 1px solid #ddd;
+  border-bottom: 1px solid rgb(191 219 254 / 13%);
 }
 
 .data-table th {
-  background: #efefef;
+  color: #dbeafe;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgb(96 165 250 / 12%);
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.data-table tbody tr:hover {
+  background: rgb(96 165 250 / 8%);
 }
 
 /* 相簿 */
@@ -535,13 +567,14 @@ body {
   margin-top: 1rem;
   padding: 1rem;
   color: #fff;
-  background: rgb(8 15 35 / 82%);
-  border: 1px solid rgb(255 255 255 / 16%);
-  border-radius: 0.6rem;
+  background: rgb(8 15 35 / 90%);
+  border: 1px solid rgb(191 219 254 / 18%);
+  border-radius: 0.8rem;
+  box-shadow: 0 16px 38px rgb(0 0 0 / 20%);
 }
 
 .weather-page {
-  max-width: 1100px;
+  max-width: 1180px;
 }
 
 .weather-heading,
@@ -553,7 +586,8 @@ body {
 }
 
 .weather-heading {
-  margin-bottom: 1.5rem;
+  align-items: center;
+  margin-bottom: 1.75rem;
   color: #fff;
 }
 
@@ -562,14 +596,31 @@ body {
   color: #fff;
 }
 
+.weather-heading h1 {
+  margin: 0.15rem 0 0.35rem;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  letter-spacing: -0.055em;
+}
+
 .weather-intro,
 .weather-section-heading > p,
 .weather-updated {
   color: rgb(255 255 255 / 72%);
 }
 
+.weather-intro {
+  max-width: 38rem;
+}
+
 .weather-refresh {
   flex: 0 0 auto;
+  padding: 0.75rem 1.15rem;
+  background: linear-gradient(110deg, #38bdf8, #6366f1);
+  box-shadow: 0 8px 22px rgb(59 130 246 / 25%);
+}
+
+.weather-refresh:hover:not(:disabled) {
+  background: linear-gradient(110deg, #0ea5e9, #4f46e5);
 }
 
 .weather-error,
@@ -579,9 +630,10 @@ body {
 .weather-forecast-card,
 .weather-rainfall {
   color: #f8fafc;
-  background: rgb(8 15 35 / 88%);
-  border: 1px solid rgb(255 255 255 / 16%);
-  border-radius: 0.8rem;
+  background: linear-gradient(145deg, rgb(14 26 56 / 91%), rgb(7 14 33 / 91%));
+  border: 1px solid rgb(191 219 254 / 17%);
+  border-radius: 1rem;
+  box-shadow: 0 16px 38px rgb(0 0 0 / 22%);
 }
 
 .weather-error,
@@ -601,8 +653,8 @@ body {
 }
 
 .weather-warnings {
-  background: rgb(120 53 15 / 82%);
-  border-color: rgb(251 191 36 / 48%);
+  background: linear-gradient(120deg, rgb(120 53 15 / 90%), rgb(69 35 27 / 91%));
+  border-color: rgb(251 191 36 / 45%);
 }
 
 .weather-warnings h2 {
@@ -619,7 +671,9 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
   gap: 1.5rem;
-  padding: 1.5rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-color: rgb(125 211 252 / 26%);
+  box-shadow: 0 22px 54px rgb(0 0 0 / 28%), inset 0 1px rgb(255 255 255 / 5%);
 }
 
 .weather-now-main {
@@ -655,11 +709,16 @@ body {
 .weather-station select {
   max-width: 16rem;
   padding: 0.45rem 0.6rem;
-  color: #0f172a;
+  color: #eff6ff;
   font: inherit;
-  background: #fff;
-  border: 1px solid #94a3b8;
-  border-radius: 0.4rem;
+  background: #101d3a;
+  border: 1px solid rgb(191 219 254 / 30%);
+  border-radius: 0.55rem;
+}
+
+.weather-station select:focus-visible {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
 }
 
 .weather-temperature {
@@ -695,9 +754,9 @@ body {
   justify-content: center;
   gap: 0.2rem;
   padding: 0.8rem;
-  background: rgb(255 255 255 / 7%);
-  border: 1px solid rgb(255 255 255 / 10%);
-  border-radius: 0.65rem;
+  background: linear-gradient(145deg, rgb(148 163 184 / 10%), rgb(255 255 255 / 4%));
+  border: 1px solid rgb(191 219 254 / 12%);
+  border-radius: 0.8rem;
 }
 
 .weather-metric span,
@@ -725,7 +784,7 @@ body {
 
 .weather-forecast-section,
 .weather-rainfall {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .weather-section-heading {
@@ -735,7 +794,8 @@ body {
 
 .weather-section-heading h2 {
   margin-top: 0.15rem;
-  font-size: 1.35rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  letter-spacing: -0.025em;
 }
 
 .weather-section-heading > p {
@@ -752,6 +812,14 @@ body {
 .weather-forecast-card {
   min-height: 12rem;
   padding: 1rem;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.weather-forecast-card:hover {
+  border-color: rgb(125 211 252 / 45%);
+  background: linear-gradient(145deg, rgb(18 39 78 / 95%), rgb(8 18 41 / 95%));
 }
 
 .weather-forecast-card h3 {
@@ -789,7 +857,7 @@ body {
 }
 
 .weather-rainfall {
-  padding: 1rem 1.25rem;
+  padding: 1.25rem;
 }
 
 .weather-rainfall-grid {
@@ -814,13 +882,13 @@ body {
 
 .weather-source {
   margin: 1.25rem 0;
-  color: rgb(255 255 255 / 72%);
+  color: rgb(219 234 254 / 72%);
   font-size: 0.8rem;
   text-align: center;
 }
 
 .weather-source a {
-  color: #bfdbfe;
+  color: #7dd3fc;
 }
 
 .weather-source a:hover,
@@ -852,14 +920,14 @@ body {
   color: #fff;
   font: inherit;
   font-weight: 700;
-  background: #2563eb;
+  background: linear-gradient(110deg, #2563eb, #4f46e5);
   border: 0;
   border-radius: 0.5rem;
   cursor: pointer;
 }
 
 .admin-button:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: linear-gradient(110deg, #1d4ed8, #4338ca);
 }
 
 .admin-button:disabled {
@@ -925,8 +993,8 @@ body {
   width: min(100%, 26rem);
   padding: 2rem;
   color: #f8fafc;
-  background: #0b1224;
-  border: 1px solid rgb(255 255 255 / 15%);
+  background: linear-gradient(145deg, #111d3c, #080f23);
+  border: 1px solid rgb(191 219 254 / 22%);
   border-radius: 1rem;
   box-shadow: 0 24px 80px rgb(0 0 0 / 45%);
 }
@@ -978,12 +1046,13 @@ body {
 
 /* 頁尾 */
 .footer {
-  padding: 1rem;
-  color: #666;
+  padding: 1rem 1.5rem;
+  color: rgb(219 234 254 / 72%);
   font-size: 0.85rem;
   text-align: center;
-  background: rgb(255 255 255 / 90%);
-  border-top: 1px solid #ddd;
+  background: rgb(5 10 26 / 82%);
+  border-top: 1px solid rgb(191 219 254 / 14%);
+  backdrop-filter: blur(12px);
 }
 
 @media (max-width: 600px) {
@@ -996,6 +1065,10 @@ body {
     grid-template-columns: 1fr;
     gap: 1rem;
     padding: 1rem;
+  }
+
+  .weather-refresh {
+    padding: 0.65rem 0.8rem;
   }
 
   .weather-metrics {
@@ -1023,5 +1096,16 @@ body {
   .weather-error {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
