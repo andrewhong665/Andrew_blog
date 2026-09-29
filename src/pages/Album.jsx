@@ -26,6 +26,9 @@ function Album() {
   const [error, setError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [deletingPath, setDeletingPath] = useState("");
+  const [editingPath, setEditingPath] = useState("");
+  const [editName, setEditName] = useState("");
+  const [renamingPath, setRenamingPath] = useState("");
   const fileInput = useRef(null);
 
   const loadPhotos = useCallback(async () => {
@@ -149,6 +152,38 @@ function Album() {
     }
   }
 
+  function startEditing(photo) {
+    setError("");
+    setEditingPath(photo.path);
+    setEditName(getImageTitle(photo.path));
+  }
+
+  async function handleRename(event, photo) {
+    event.preventDefault();
+    setRenamingPath(photo.path);
+    setError("");
+
+    try {
+      const response = await fetch("/api/admin/rename-photo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: photo.path, name: editName }),
+      });
+      await parseApiResponse(response, "Unable to rename this photo.");
+      setPhotos(await loadPhotos());
+      setEditingPath("");
+      setEditName("");
+    } catch (renameFailure) {
+      setError(
+        renameFailure instanceof Error
+          ? renameFailure.message
+          : "Unable to rename this photo.",
+      );
+    } finally {
+      setRenamingPath("");
+    }
+  }
+
   return (
     <>
       <Header />
@@ -221,20 +256,72 @@ function Album() {
                     alt={getImageTitle(photo.path)}
                     loading="lazy"
                   />
+                </a>
+                {isAdmin && (
+                  <>
+                    <button
+                      aria-label={`Rename ${getImageTitle(photo.path)}`}
+                      className="album-photo-title album-photo-title-edit"
+                      disabled={Boolean(renamingPath)}
+                      type="button"
+                      onClick={() => startEditing(photo)}
+                    >
+                      {getImageTitle(photo.path)}
+                    </button>
+                    {editingPath === photo.path && (
+                      <form
+                        className="album-photo-rename"
+                        onSubmit={(event) => handleRename(event, photo)}
+                      >
+                        <label className="visually-hidden" htmlFor="photo-name">
+                          New photo name (extension stays the same)
+                        </label>
+                        <input
+                          autoFocus
+                          id="photo-name"
+                          maxLength={100}
+                          onChange={(event) => setEditName(event.target.value)}
+                          pattern="[A-Za-z0-9 _-]{1,100}"
+                          required
+                          title="Use letters, numbers, spaces, underscores, or hyphens."
+                          value={editName}
+                        />
+                        <button
+                          className="admin-button"
+                          disabled={Boolean(renamingPath)}
+                          type="submit"
+                        >
+                          {renamingPath === photo.path ? "Saving..." : "Save"}
+                        </button>
+                        <button
+                          className="admin-button admin-button-secondary"
+                          disabled={Boolean(renamingPath)}
+                          onClick={() => setEditingPath("")}
+                          type="button"
+                        >
+                          Cancel
+                        </button>
+                      </form>
+                    )}
+                    <button
+                      aria-label={`Delete ${getImageTitle(photo.path)}`}
+                      className="album-delete-button"
+                      disabled={
+                        deletingPath === photo.path ||
+                        Boolean(renamingPath) ||
+                        editingPath === photo.path
+                      }
+                      type="button"
+                      onClick={() => handleDelete(photo)}
+                    >
+                      {deletingPath === photo.path ? "Deleting..." : "Delete"}
+                    </button>
+                  </>
+                )}
+                {!isAdmin && (
                   <span className="album-photo-title">
                     {getImageTitle(photo.path)}
                   </span>
-                </a>
-                {isAdmin && (
-                  <button
-                    aria-label={`Delete ${getImageTitle(photo.path)}`}
-                    className="album-delete-button"
-                    disabled={deletingPath === photo.path}
-                    type="button"
-                    onClick={() => handleDelete(photo)}
-                  >
-                    {deletingPath === photo.path ? "Deleting..." : "Delete"}
-                  </button>
                 )}
               </article>
             ))}

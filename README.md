@@ -16,7 +16,8 @@ Do not put a service-role or secret key in a `VITE_` variable.
 The Photo Album page reads public images from the `Andrew_Blog_photos` Storage
 bucket. Its Vercel API functions provide administrator sign-in and protected
 upload/delete operations. Four quick clicks on the footer copyright open the
-admin login dialog.
+admin login dialog. After signing in, click a photo's displayed name to rename
+its Storage object; the existing folder and file extension are preserved.
 
 Set these variables in Vercel **Project Settings → Environment Variables** for
 Production, Preview, and Development, then redeploy:

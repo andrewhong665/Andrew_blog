@@ -484,6 +484,53 @@ section span:nth-child(10) {
   white-space: nowrap;
 }
 
+.album-photo-title-edit {
+  width: 100%;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  border: 0;
+  cursor: pointer;
+}
+
+.album-photo-title-edit:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.album-photo-title-edit:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.album-photo-rename {
+  position: absolute;
+  z-index: 2;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  background: #0b1224;
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 0.5rem;
+}
+
+.album-photo-rename input {
+  min-width: 0;
+  padding: 0.45rem;
+  color: #0f172a;
+  font: inherit;
+  border: 1px solid #94a3b8;
+  border-radius: 0.35rem;
+}
+
+.album-photo-rename .admin-button {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.8rem;
+}
+
 .table-message {
   margin-top: 1rem;
   padding: 1rem;
