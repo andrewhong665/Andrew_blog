@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
 import DataTable from "./pages/DataTable";
 import Album from "./pages/Album";
+import Latest from "./pages/Latest";
 
 function App() {
   return (
@@ -29,7 +30,7 @@ function App() {
       <div className="app">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/latest" element={<Home />} />
+          <Route path="/latest" element={<Latest />} />
           <Route path="/post/:id" element={<PostDetail />} />
           {/* 之後會從 Supabase 讀取資料的表格頁面 */}
           <Route path="/table" element={<DataTable />} />

@@ -13,6 +13,12 @@ The page derives its columns from the returned rows. Configure the Data API and
 database grants/RLS policies to allow the intended app users to read this data.
 Do not put a service-role or secret key in a `VITE_` variable.
 
+## Hong Kong weather
+
+The Latest page reads current observations (`rhrread`) and the nine-day
+forecast (`fnd`) from the Hong Kong Observatory Open Data API. It refreshes
+automatically every ten minutes and includes an HKO source credit on the page.
+
 The Photo Album page reads public images from the `Andrew_Blog_photos` Storage
 bucket. Its Vercel API functions provide administrator sign-in and protected
 upload/delete operations. Four quick clicks on the footer copyright open the
