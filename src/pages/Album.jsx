@@ -160,6 +160,17 @@ function Album() {
 
   async function handleRename(event, photo) {
     event.preventDefault();
+    if (
+      !editName ||
+      editName !== editName.trim() ||
+      Array.from(editName).length > 100
+    ) {
+      setError(
+        "Use a photo name of 1 to 100 characters without leading or trailing spaces or path separators.",
+      );
+      return;
+    }
+
     setRenamingPath(photo.path);
     setError("");
 
@@ -279,11 +290,10 @@ function Album() {
                         <input
                           autoFocus
                           id="photo-name"
-                          maxLength={100}
+                          maxLength={200}
                           onChange={(event) => setEditName(event.target.value)}
-                          pattern="[A-Za-z0-9 _-]{1,100}"
                           required
-                          title="Use letters, numbers, spaces, underscores, or hyphens."
+                          title="Use up to 100 characters. Do not include leading or trailing spaces or path separators."
                           value={editName}
                         />
                         <button

@@ -9,7 +9,7 @@ import {
 
 const allowedImagePath =
   /^(?!\/)(?!.*(?:^|\/)\.\.?(?:\/|$))[\w./ -]+\.(?:avif|bmp|gif|heic|jpe?g|png|svg|webp)$/i;
-const allowedPhotoName = /^[\w -]{1,100}$/;
+const allowedPhotoName = /^[\p{L}\p{M}\p{N}\p{P}\p{S} ]{1,100}$/u;
 
 export default async function handler(request, response) {
   if (request.method !== "POST") {
@@ -36,9 +36,17 @@ export default async function handler(request, response) {
     });
   }
 
-  if (!allowedPhotoName.test(name) || name !== requestedName) {
+  if (
+    !allowedPhotoName.test(name) ||
+    name !== requestedName ||
+    name === "." ||
+    name === ".." ||
+    name.includes("/") ||
+    name.includes("\\")
+  ) {
     return sendJson(response, 400, {
-      error: "Use 1 to 100 letters, numbers, spaces, underscores, or hyphens.",
+      error:
+        "Use a photo name of 1 to 100 characters without leading or trailing spaces or path separators.",
     });
   }
 
