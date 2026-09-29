@@ -13,9 +13,26 @@ The page derives its columns from the returned rows. Configure the Data API and
 database grants/RLS policies to allow the intended app users to read this data.
 Do not put a service-role or secret key in a `VITE_` variable.
 
-The Photo Album page lists image files from the `Andrew_Blog_photos` Storage
-bucket, including images in folders. The app needs permission to list and view
-objects in that bucket; signed viewing links expire after one hour.
+The Photo Album page reads public images from the `Andrew_Blog_photos` Storage
+bucket. Its Vercel API functions provide administrator sign-in and protected
+upload/delete operations. Four quick clicks on the footer copyright open the
+admin login dialog.
+
+Set these variables in Vercel **Project Settings → Environment Variables** for
+Production, Preview, and Development, then redeploy:
+
+- `SUPABASE_SERVICE_ROLE_KEY`: the project's server-side service-role/secret
+  key. This must never use a `VITE_` prefix or be exposed in browser code.
+- `ADMIN_PASSWORD`: a strong, unique password of at least 12 characters.
+- `ADMIN_SESSION_SECRET`: a random secret with at least 32 characters.
+- `ADMIN_USERNAME`: optional; defaults to `Admin`.
+
+The Vercel API also uses `VITE_SUPABASE_URL` to connect to the project. The
+`SUPABASE_SERVICE_ROLE_KEY` bypasses Storage RLS, so it is used only inside
+server-side API functions after validating the signed, HttpOnly admin session.
+Keep `.env` out of Git. For local testing of Vercel API functions, run
+`vercel dev`; the Vite development server alone does not run the `api/`
+functions.
 
 Currently, two official plugins are available:
 

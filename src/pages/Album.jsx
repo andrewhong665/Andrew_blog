@@ -1,123 +1,52 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useAdmin } from "../admin/AdminContext";
 import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
-
-const bucketName = "Andrew_Blog_photos";
-const providedPhotoPath = "IMG_5697.HEIC";
-const pageSize = 100;
-const imageExtensions = /\.(avif|bmp|gif|heic|jpe?g|png|svg|webp)$/i;
-
-function isImage(file) {
-  return (
-    file.metadata?.mimetype?.startsWith("image/") ||
-    imageExtensions.test(file.name)
-  );
-}
 
 function getImageTitle(path) {
   const fileName = path.split("/").at(-1) ?? path;
   return fileName.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ");
 }
 
-async function listAlbumImages() {
-  const storage = supabase.storage.from(bucketName);
-  const folders = [""];
-  const visitedFolders = new Set();
-  const imagePaths = [];
+async function parseApiResponse(response, fallbackMessage) {
+  const result = await response.json().catch(() => ({}));
 
-  while (folders.length > 0) {
-    const prefix = folders.pop();
-
-    if (visitedFolders.has(prefix)) {
-      continue;
-    }
-
-    visitedFolders.add(prefix);
-    let offset = 0;
-
-    while (true) {
-      const { data, error } = await storage.list(prefix, {
-        limit: pageSize,
-        offset,
-        sortBy: { column: "name", order: "asc" },
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      const entries = data ?? [];
-
-      for (const entry of entries) {
-        const path = prefix ? `${prefix}/${entry.name}` : entry.name;
-
-        if (entry.id === null && entry.metadata === null) {
-          folders.push(path);
-        } else if (isImage(entry)) {
-          imagePaths.push(path);
-        }
-      }
-
-      if (entries.length < pageSize) {
-        break;
-      }
-
-      offset += pageSize;
-    }
+  if (!response.ok) {
+    throw new Error(result.error || fallbackMessage);
   }
 
-  const listedPhotos = await Promise.all(
-    imagePaths.map(async (path) => {
-      const { data, error } = await storage.createSignedUrl(path, 3600);
-
-      if (error) {
-        throw error;
-      }
-
-      if (!data?.signedUrl) {
-        throw new Error(`Could not create a viewing link for ${path}.`);
-      }
-
-      return { path, url: data.signedUrl };
-    }),
-  );
-
-  if (!imagePaths.includes(providedPhotoPath)) {
-    const { data } = storage.getPublicUrl(providedPhotoPath, {
-      transform: {
-        width: 1000,
-        height: 750,
-        resize: "contain",
-      },
-    });
-
-    listedPhotos.push({ path: providedPhotoPath, url: data.publicUrl });
-  }
-
-  return listedPhotos;
+  return result;
 }
 
 function Album() {
+  const { isAdmin } = useAdmin();
   const [photos, setPhotos] = useState([]);
-  const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [deletingPath, setDeletingPath] = useState("");
+  const fileInput = useRef(null);
+
+  const loadPhotos = useCallback(async () => {
+    const response = await fetch("/api/photos", { cache: "no-store" });
+    const result = await parseApiResponse(
+      response,
+      "Unable to load the photo album.",
+    );
+    return result.photos ?? [];
+  }, []);
 
   useEffect(() => {
-    if (!supabase) {
-      return undefined;
-    }
-
     let isCurrent = true;
 
-    async function loadPhotos() {
-      try {
-        const albumPhotos = await listAlbumImages();
-
+    loadPhotos()
+      .then((albumPhotos) => {
         if (isCurrent) {
           setPhotos(albumPhotos);
         }
-      } catch (loadError) {
+      })
+      .catch((loadError) => {
         if (isCurrent) {
           setError(
             loadError instanceof Error
@@ -125,19 +54,100 @@ function Album() {
               : "An unexpected error occurred while loading the album.",
           );
         }
-      } finally {
+      })
+      .finally(() => {
         if (isCurrent) {
           setLoading(false);
         }
-      }
-    }
-
-    loadPhotos();
+      });
 
     return () => {
       isCurrent = false;
     };
-  }, []);
+  }, [loadPhotos]);
+
+  async function handleUpload(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    setIsUploading(true);
+    setError("");
+
+    try {
+      const authorizationResponse = await fetch("/api/admin/upload-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: file.name,
+          fileSize: file.size,
+        }),
+      });
+      const authorization = await parseApiResponse(
+        authorizationResponse,
+        "Unable to prepare the photo upload.",
+      );
+
+      if (!supabase) {
+        throw new Error("Supabase is not configured in this deployment.");
+      }
+
+      const { error: uploadError } = await supabase.storage
+        .from("Andrew_Blog_photos")
+        .uploadToSignedUrl(
+          authorization.path,
+          authorization.token,
+          file,
+          { contentType: authorization.contentType },
+        );
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      setPhotos(await loadPhotos());
+    } catch (uploadFailure) {
+      setError(
+        uploadFailure instanceof Error
+          ? uploadFailure.message
+          : "Unable to upload this photo.",
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  async function handleDelete(photo) {
+    if (!window.confirm(`Permanently delete "${getImageTitle(photo.path)}"?`)) {
+      return;
+    }
+
+    setDeletingPath(photo.path);
+    setError("");
+
+    try {
+      const response = await fetch("/api/admin/delete-photo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: photo.path }),
+      });
+      await parseApiResponse(response, "Unable to delete this photo.");
+      setPhotos((currentPhotos) =>
+        currentPhotos.filter((currentPhoto) => currentPhoto.path !== photo.path),
+      );
+    } catch (deleteFailure) {
+      setError(
+        deleteFailure instanceof Error
+          ? deleteFailure.message
+          : "Unable to delete this photo.",
+      );
+    } finally {
+      setDeletingPath("");
+    }
+  }
 
   return (
     <>
@@ -155,14 +165,37 @@ function Album() {
           )}
         </div>
 
+        {isAdmin && (
+          <div className="album-admin-tools">
+            <input
+              accept="image/avif,image/bmp,image/gif,image/heic,image/jpeg,image/png,image/svg+xml,image/webp,.avif,.bmp,.gif,.heic,.jpeg,.jpg,.png,.svg,.webp"
+              className="visually-hidden"
+              onChange={handleUpload}
+              ref={fileInput}
+              type="file"
+            />
+            <button
+              className="admin-button"
+              disabled={isUploading}
+              type="button"
+              onClick={() => fileInput.current?.click()}
+            >
+              {isUploading ? "Uploading..." : "Upload photo"}
+            </button>
+            <span>Up to 100 MB per image</span>
+          </div>
+        )}
+
+        {error && (
+          <p className="table-message" role="alert">
+            {error}
+          </p>
+        )}
+
         {!isSupabaseConfigured ? (
           <p className="table-message" role="alert">
-            Supabase is not configured. Add your project URL and publishable
-            key to a local <code>.env</code> file, then restart the app.
-          </p>
-        ) : error ? (
-          <p className="table-message" role="alert">
-            Could not load the photo album: {error}
+            Supabase is not configured. Add the project URL and publishable key
+            to the deployment environment.
           </p>
         ) : loading ? (
           <p className="table-message" role="status" aria-live="polite">
@@ -170,28 +203,40 @@ function Album() {
           </p>
         ) : photos.length === 0 ? (
           <p className="table-message">
-            No photos found in <code>{bucketName}</code> yet. Upload images to
-            the bucket and they will appear here.
+            No photos found in <code>Andrew_Blog_photos</code> yet. Upload
+            images to the bucket and they will appear here.
           </p>
         ) : (
           <div className="album-grid">
             {photos.map((photo) => (
-              <a
-                className="album-photo"
-                href={photo.url}
-                key={photo.path}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src={photo.url}
-                  alt={getImageTitle(photo.path)}
-                  loading="lazy"
-                />
-                <span className="album-photo-title">
-                  {getImageTitle(photo.path)}
-                </span>
-              </a>
+              <article className="album-photo" key={photo.path}>
+                <a
+                  className="album-photo-link"
+                  href={photo.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    src={photo.url}
+                    alt={getImageTitle(photo.path)}
+                    loading="lazy"
+                  />
+                  <span className="album-photo-title">
+                    {getImageTitle(photo.path)}
+                  </span>
+                </a>
+                {isAdmin && (
+                  <button
+                    aria-label={`Delete ${getImageTitle(photo.path)}`}
+                    className="album-delete-button"
+                    disabled={deletingPath === photo.path}
+                    type="button"
+                    onClick={() => handleDelete(photo)}
+                  >
+                    {deletingPath === photo.path ? "Deleting..." : "Delete"}
+                  </button>
+                )}
+              </article>
             ))}
           </div>
         )}
