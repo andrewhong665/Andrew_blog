@@ -408,6 +408,28 @@ body {
 
 .post-content {
   margin-top: 1rem;
+  line-height: 1.75;
+}
+
+.post-content p,
+.post-content li {
+  margin: 0 0 0.75rem;
+  white-space: normal;
+}
+
+.post-content p:last-child,
+.post-content ul:last-child {
+  margin-bottom: 0;
+}
+
+.post-content ul {
+  margin: 0.35rem 0 1rem 1.5rem;
+  padding-left: 1rem;
+}
+
+.post-content strong {
+  color: #f8fbff;
+  font-weight: 700;
 }
 
 /* 資料表格 */
